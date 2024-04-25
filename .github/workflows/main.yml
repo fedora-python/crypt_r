@@ -1,0 +1,22 @@
+name: Run Tox tests
+on: [push, pull_request]
+
+jobs:
+  tox_test:
+    name: Tox test
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run Tox tests
+      id: test
+      uses: fedora-python/tox-github-action@main
+      with:
+        tox_env: ${{ matrix.tox_env }}
+        dnf_install: python3.11-test python3.12-test python3.13-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tox_env:
+          - py311
+          - py312
+          - py313
