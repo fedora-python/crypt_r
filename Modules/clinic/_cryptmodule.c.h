@@ -1,3 +1,61 @@
+/* Two functions copied from Python/getargs.c */
+
+void
+_PyArg_BadArgument(const char *fname, const char *displayname,
+                   const char *expected, PyObject *arg)
+{
+    PyErr_Format(PyExc_TypeError,
+                 "%.200s() %.200s must be %.50s, not %.50s",
+                 fname, displayname, expected,
+                 arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+}
+
+#undef _PyArg_CheckPositional
+
+int
+_PyArg_CheckPositional(const char *name, Py_ssize_t nargs,
+                       Py_ssize_t min, Py_ssize_t max)
+{
+    assert(min >= 0);
+    assert(min <= max);
+
+    if (nargs < min) {
+        if (name != NULL)
+            PyErr_Format(
+                PyExc_TypeError,
+                "%.200s expected %s%zd argument%s, got %zd",
+                name, (min == max ? "" : "at least "), min, min == 1 ? "" : "s", nargs);
+        else
+            PyErr_Format(
+                PyExc_TypeError,
+                "unpacked tuple should have %s%zd element%s,"
+                " but has %zd",
+                (min == max ? "" : "at least "), min, min == 1 ? "" : "s", nargs);
+        return 0;
+    }
+
+    if (nargs == 0) {
+        return 1;
+    }
+
+    if (nargs > max) {
+        if (name != NULL)
+            PyErr_Format(
+                PyExc_TypeError,
+                "%.200s expected %s%zd argument%s, got %zd",
+                name, (min == max ? "" : "at most "), max, max == 1 ? "" : "s", nargs);
+        else
+            PyErr_Format(
+                PyExc_TypeError,
+                "unpacked tuple should have %s%zd element%s,"
+                " but has %zd",
+                (min == max ? "" : "at most "), max, max == 1 ? "" : "s", nargs);
+        return 0;
+    }
+
+    return 1;
+}
+
 /*[clinic input]
 preserve
 [clinic start generated code]*/
