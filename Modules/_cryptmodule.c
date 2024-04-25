@@ -58,7 +58,9 @@ static PyMethodDef crypt_methods[] = {
 };
 
 static PyModuleDef_Slot _crypt_slots[] = {
+#ifdef Py_MOD_PER_INTERPRETER_GIL_SUPPORTED
     {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
+#endif
     {0, NULL}
 };
 
