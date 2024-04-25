@@ -70,7 +70,7 @@ The ``crypt`` module defines the following functions:
 ``crypt(word, salt=None)``
    *word* will usually be a user's password as typed at a prompt or  in a graphical
    interface.  The optional *salt* is either a string as returned from
-   `mksalt()`_, one of the ``crypt.METHOD_*`` values (though not all
+   ``mksalt()``, one of the ``crypt.METHOD_*`` values (though not all
    may be available on all platforms), or a full encrypted password
    including salt, as returned by this function.  If *salt* is not
    provided, the strongest method available in ``methods`` will be used.
@@ -157,5 +157,4 @@ check it against the original:
 
 .. _PEP 594: https://peps.python.org/pep-0594/#crypt
 .. _crypt(3): https://manpages.debian.org/crypt(3)
-.. _mksalt(): https://docs.python.org/3/library/crypt.html#crypt.mksalt
 .. _hmac.compare_digest(): https://docs.python.org/3/library/hmac.html#hmac.compare_digest
