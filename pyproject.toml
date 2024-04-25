@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypt"
+version = "3.12.3"
+
+[tool.setuptools]
+py-modules = ["crypt"]
+package-dir = {"" = "Lib"}
