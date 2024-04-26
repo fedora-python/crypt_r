@@ -6,9 +6,7 @@
 #include "Python.h"
 
 #include <sys/types.h>
-#ifdef HAVE_CRYPT_H
 #include <crypt.h>
-#endif
 
 /* Module crypt */
 
@@ -74,13 +72,9 @@ crypt_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     }
 
     char *crypt_result;
-#ifdef HAVE_CRYPT_R
     struct crypt_data data;
     memset(&data, 0, sizeof(data));
     crypt_result = crypt_r(word, salt, &data);
-#else
-    crypt_result = crypt(word, salt);
-#endif
     if (crypt_result == NULL) {
         return PyErr_SetFromErrno(PyExc_OSError);
     }
