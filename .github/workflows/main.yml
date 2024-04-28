@@ -12,7 +12,6 @@ jobs:
       uses: fedora-python/tox-github-action@main
       with:
         tox_env: ${{ matrix.tox_env }}
-        dnf_install: python3.11-test python3.12-test python3.13-test
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -1,29 +1,9 @@
 import sys
 import unittest
-from test.support import check_sanitizer, warnings_helper
+
+import crypt
 
 
-try:
-    if check_sanitizer(address=True, memory=True):
-        raise unittest.SkipTest("The crypt module SEGFAULTs on ASAN/MSAN builds")
-    crypt = warnings_helper.import_deprecated("crypt")
-    IMPORT_ERROR = None
-except ImportError as ex:
-    if sys.platform != 'win32':
-        raise unittest.SkipTest(str(ex))
-    crypt = None
-    IMPORT_ERROR = str(ex)
-
-
-@unittest.skipUnless(sys.platform == 'win32', 'This should only run on windows')
-@unittest.skipIf(crypt, 'import succeeded')
-class TestWhyCryptDidNotImport(unittest.TestCase):
-
-    def test_import_failure_message(self):
-        self.assertIn('not supported', IMPORT_ERROR)
-
-
-@unittest.skipUnless(crypt, 'crypt module is required')
 class CryptTestCase(unittest.TestCase):
 
     def test_crypt(self):
@@ -60,10 +40,7 @@ class CryptTestCase(unittest.TestCase):
             self.assertEqual(crypt.methods[-1], crypt.METHOD_CRYPT)
 
     @unittest.skipUnless(
-        crypt
-        and (
-            crypt.METHOD_SHA256 in crypt.methods or crypt.METHOD_SHA512 in crypt.methods
-        ),
+        crypt.METHOD_SHA256 in crypt.methods or crypt.METHOD_SHA512 in crypt.methods,
         'requires support of SHA-2',
     )
     def test_sha2_rounds(self):
@@ -79,7 +56,7 @@ class CryptTestCase(unittest.TestCase):
                 self.assertEqual(cr2, cr)
 
     @unittest.skipUnless(
-        crypt and crypt.METHOD_BLOWFISH in crypt.methods, 'requires support of Blowfish'
+        crypt.METHOD_BLOWFISH in crypt.methods, 'requires support of Blowfish'
     )
     def test_blowfish_rounds(self):
         for log_rounds in range(4, 11):
