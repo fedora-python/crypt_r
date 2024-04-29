@@ -6,7 +6,7 @@ setup(
         Extension(
             '_crypt',
             sources=[
-                'Modules/_cryptmodule.c',
+                'src/_cryptmodule.c',
             ],
             libraries=[
                 'crypt',

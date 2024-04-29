@@ -1,5 +1,4 @@
 include README.rst
 include LICENSE
 include tox.ini
-recursive-include Lib *.py
-recursive-include Modules *.h *.c
+recursive-include src *.py *.h *.c

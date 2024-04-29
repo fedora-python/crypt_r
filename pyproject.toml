@@ -8,4 +8,4 @@ version = "3.12.3"
 
 [tool.setuptools]
 py-modules = ["crypt"]
-package-dir = {"" = "Lib"}
+package-dir = {"" = "src"}
