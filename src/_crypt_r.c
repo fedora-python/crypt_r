@@ -83,7 +83,7 @@ crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
 
 
 static PyMethodDef crypt_r_methods[] = {
-    {"crypt", crypt_r_crypt, METH_FASTCALL, crypt_r_crypt__doc__},
+    {"crypt", (PyCFunction)crypt_r_crypt, METH_FASTCALL, crypt_r_crypt__doc__},
     {NULL,              NULL}           /* sentinel */
 };
 
