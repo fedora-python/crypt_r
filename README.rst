@@ -8,16 +8,41 @@ as it was present in Python 3.12 before it was removed.
 
 See `PEP 594`_ for details of the removal.
 
+Unlike ``crypt``, this library always exposes the `crypt_r(3)`_ function, not `crypt(3)`_.
+
+Note that ``crypt_r`` is not part of any standard.
+This library is tested with the ``crypt_r`` implementation in Fedora Linux
+(libxcrypt, as of 2024), and should work with compatible implementations of ``crypt_r``
+(such as ``libcrypt.so`` from older glibc).
+
+Note that the improvements in ``crypt_r`` over ``crypt`` are in memory management and thread safety,
+not security/cryptography.
+
+It is easy to use ``crypt_r`` in an insecure way. Notably:
+All hashing methods except ``METHOD_CRYPT`` (the original Unix algorithm from the 1970s)
+are optional platform-specific extensions.
+This library does not expose modern hashing methods like libxcrypt's yescrypt.
+The last wrapper update is from 2017.
+No future development is planned.
+
+To use this module, you can either import ``crypt_r`` explicitly
+or use the old ``crypt`` name for backward compatibility.
+However, on Python older than 3.13, the ``crypt`` module
+from the standard library will usually take precedence on ``sys.path``.
+
+Here follows the original documentation for the removed ``crypt`` module,
+updated to refer to it as ``crypt_r``:
+
 --------------
 
-This module implements an interface to the `crypt(3)`_ routine, which is
+This module implements an interface to the `crypt_r(3)`_ routine, which is
 a one-way hash function based upon a modified DES algorithm; see the Unix man
 page for further details.  Possible uses include storing hashed passwords
 so you can check passwords without storing the actual password, or attempting
 to crack Unix passwords with a dictionary.
 
 Notice that the behavior of this module depends on the actual implementation  of
-the `crypt(3)`_ routine in the running system.  Therefore, any
+the `crypt_r(3)`_ routine in the running system.  Therefore, any
 extensions available on the current implementation will also  be available on
 this module.
 
@@ -89,7 +114,7 @@ The ``crypt_r`` module defines the following functions:
    Returns the hashed password as a string, which will be composed of
    characters from the same alphabet as the salt.
 
-   Since a few `crypt(3)`_ extensions allow different values, with
+   Since a few `crypt_r(3)`_ extensions allow different values, with
    different sizes in the *salt*, it is recommended to use  the full crypted
    password as salt when checking for a password.
 
@@ -156,6 +181,18 @@ check it against the original:
    if not compare_hash(hashed, crypt_r.crypt(plaintext, hashed)):
        raise ValueError("hashed version doesn't validate against original")
 
+--------------
+
+
+Changelog
+---------
+
+For historical changes when this module was included in Python,
+please refer to the `Python 3.12 Changelog`_.
+
+
 .. _PEP 594: https://peps.python.org/pep-0594/#crypt
 .. _crypt(3): https://manpages.debian.org/crypt(3)
+.. _crypt_r(3): https://manpages.debian.org/crypt_r(3)
 .. _hmac.compare_digest(): https://docs.python.org/3/library/hmac.html#hmac.compare_digest
+.. _Python 3.12 Changelog: https://docs.python.org/3.12/whatsnew/changelog.html
