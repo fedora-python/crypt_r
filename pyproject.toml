@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "crypt_r"
-version = "3.12.3"
+version = "3.13.0"
 authors = [
     {name = "Steven D. Majewski", email = "sdm7g@virginia.edu"},
 ]

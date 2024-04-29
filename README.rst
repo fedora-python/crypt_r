@@ -187,6 +187,13 @@ check it against the original:
 Changelog
 ---------
 
+3.13.0
+^^^^^^
+
+* Initial fork from CPython 3.12.3
+* Always uses the `crypt_r(3)`_ function, never `crypt(3)`_
+* Renamed the Python modules to ``crypt_r`` and ``_crypt_r``
+
 For historical changes when this module was included in Python,
 please refer to the `Python 3.12 Changelog`_.
 
