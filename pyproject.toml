@@ -5,6 +5,29 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "crypt_r"
 version = "3.12.3"
+authors = [
+    {name = "Steven D. Majewski", email = "sdm7g@virginia.edu"},
+]
+maintainers = [
+    {name = "Miro Hrončok", email = "miro@hroncok.cz"},
+    {name = "Petr Viktorin", email = "encukou@gmail.com"},
+    {name = "Tomáš Hrnčiar", email = "tomas.hrnciar@me.com"},
+    {name = "Karolina Surma", email = "ksurma@redhat.com"},
+]
+description = "A copy of the `crypt` module that was removed in Python 3.13"
+readme = "README.rst"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "License :: OSI Approved :: Python Software Foundation License",
+    "Operating System :: POSIX :: Linux",
+]
+license = {file = "LICENSE"}
+
+[project.urls]
+"Homepage" = "https://github.com/fedora-python/crypt_r"
+"Bug Tracker" = "https://github.com/fedora-python/crypt_r/issues"
 
 [tool.setuptools]
 py-modules = ["crypt_r", "crypt"]
