@@ -187,6 +187,12 @@ check it against the original:
 Changelog
 ---------
 
+3.13.1
+^^^^^^
+
+* Fix build with ``-Werror=incompatible-pointer-types``
+
+
 3.13.0
 ^^^^^^
 
