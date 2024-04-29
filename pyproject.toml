@@ -7,5 +7,5 @@ name = "crypt_r"
 version = "3.12.3"
 
 [tool.setuptools]
-py-modules = ["crypt_r"]
+py-modules = ["crypt_r", "crypt"]
 package-dir = {"" = "src"}
