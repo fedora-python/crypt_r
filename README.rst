@@ -1,9 +1,10 @@
-crypt --- Function to check Unix passwords
-==========================================
+crypt_r --- Function to check Unix passwords
+============================================
 
 Originally by: Steven D. Majewski <sdm7g@virginia.edu>
 
-The ``crypt`` module as it was present in Python 3.12 before it was removed.
+The ``crypt_r`` module is a renamed copy of the ``crypt`` module
+as it was present in Python 3.12 before it was removed.
 
 See `PEP 594`_ for details of the removal.
 
@@ -25,7 +26,7 @@ Hashing Methods
 
 New in Python 3.3.
 
-The ``crypt`` module defines the list of hashing methods (not all methods
+The ``crypt_r`` module defines the list of hashing methods (not all methods
 are available on all platforms):
 
 ``METHOD_SHA512``
@@ -65,7 +66,7 @@ New in Python 3.3.
 Module Functions
 ----------------
 
-The ``crypt`` module defines the following functions:
+The ``crypt_r`` module defines the following functions:
 
 ``crypt(word, salt=None)``
    *word* will usually be a user's password as typed at a prompt or  in a graphical
@@ -128,7 +129,7 @@ operation is needed to limit exposure to timing attacks.
 .. code-block:: python
 
    import pwd
-   import crypt
+   import crypt_r
    import getpass
    from hmac import compare_digest as compare_hash
 
@@ -139,7 +140,7 @@ operation is needed to limit exposure to timing attacks.
            if cryptedpasswd == 'x' or cryptedpasswd == '*':
                raise ValueError('no support for shadow passwords')
            cleartext = getpass.getpass()
-           return compare_hash(crypt.crypt(cleartext, cryptedpasswd), cryptedpasswd)
+           return compare_hash(crypt_r.crypt(cleartext, cryptedpasswd), cryptedpasswd)
        else:
            return True
 
@@ -148,11 +149,11 @@ check it against the original:
 
 .. code-block:: python
 
-   import crypt
+   import crypt_r
    from hmac import compare_digest as compare_hash
 
-   hashed = crypt.crypt(plaintext)
-   if not compare_hash(hashed, crypt.crypt(plaintext, hashed)):
+   hashed = crypt_r.crypt(plaintext)
+   if not compare_hash(hashed, crypt_r.crypt(plaintext, hashed)):
        raise ValueError("hashed version doesn't validate against original")
 
 .. _PEP 594: https://peps.python.org/pep-0594/#crypt

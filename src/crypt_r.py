@@ -3,21 +3,17 @@
 import sys as _sys
 
 try:
-    import _crypt
+    import _crypt_r
 except ModuleNotFoundError:
     if _sys.platform == 'win32':
-        raise ImportError("The crypt module is not supported on Windows")
+        raise ImportError("The crypt_r module is not supported on Windows")
     else:
-        raise ImportError("The required _crypt module was not built as part of CPython")
+        raise
 
 import errno
 import string as _string
-import warnings
 from random import SystemRandom as _SystemRandom
 from collections import namedtuple as _namedtuple
-
-
-warnings._deprecated(__name__, remove=(3, 13))
 
 
 _saltchars = _string.ascii_letters + _string.digits + './'
@@ -30,7 +26,7 @@ class _Method(_namedtuple('_Method', 'name ident salt_chars total_size')):
     legacy 2-character crypt method."""
 
     def __repr__(self):
-        return '<crypt.METHOD_{}>'.format(self.name)
+        return '<crypt_r.METHOD_{}>'.format(self.name)
 
 
 def mksalt(method=None, *, rounds=None):
@@ -77,13 +73,13 @@ def crypt(word, salt=None):
 
     If ``salt`` is not specified or is ``None``, the strongest
     available method will be selected and a salt generated.  Otherwise,
-    ``salt`` may be one of the ``crypt.METHOD_*`` values, or a string as
-    returned by ``crypt.mksalt()``.
+    ``salt`` may be one of the ``crypt_r.METHOD_*`` values, or a string as
+    returned by ``crypt_r.mksalt()``.
 
     """
     if salt is None or isinstance(salt, _Method):
         salt = mksalt(salt)
-    return _crypt.crypt(word, salt)
+    return _crypt_r.crypt(word, salt)
 
 
 #  available salting/crypto methods

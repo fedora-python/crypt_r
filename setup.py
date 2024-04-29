@@ -4,9 +4,9 @@ from setuptools import setup, Extension
 setup(
     ext_modules=[
         Extension(
-            '_crypt',
+            '_crypt_r',
             sources=[
-                'src/_cryptmodule.c',
+                'src/_crypt_r.c',
             ],
             libraries=[
                 'crypt',

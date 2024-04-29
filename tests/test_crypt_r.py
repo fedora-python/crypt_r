@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-import crypt
+import crypt_r as crypt
 
 
 class CryptTestCase(unittest.TestCase):

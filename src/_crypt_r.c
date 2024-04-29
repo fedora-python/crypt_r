@@ -10,7 +10,7 @@
 
 /* Module crypt */
 
-PyDoc_STRVAR(crypt_crypt__doc__,
+PyDoc_STRVAR(crypt_r_crypt__doc__,
 "crypt($module, word, salt, /)\n"
 "--\n"
 "\n"
@@ -22,7 +22,7 @@ PyDoc_STRVAR(crypt_crypt__doc__,
 "results for a given *word*.");
 
 static PyObject *
-crypt_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
+crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
 {
     if (nargs != 2) {
         PyErr_Format(PyExc_TypeError,"crypt expected 2 arguments, got %zd", nargs);
@@ -82,32 +82,32 @@ crypt_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
 }
 
 
-static PyMethodDef crypt_methods[] = {
-    {"crypt", crypt_crypt, METH_FASTCALL, crypt_crypt__doc__},
+static PyMethodDef crypt_r_methods[] = {
+    {"crypt", crypt_r_crypt, METH_FASTCALL, crypt_r_crypt__doc__},
     {NULL,              NULL}           /* sentinel */
 };
 
-static PyModuleDef_Slot _crypt_slots[] = {
+static PyModuleDef_Slot _crypt_r_slots[] = {
 #ifdef Py_MOD_PER_INTERPRETER_GIL_SUPPORTED
     {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
 #endif
     {0, NULL}
 };
 
-static struct PyModuleDef cryptmodule = {
+static struct PyModuleDef crypt_r_module = {
     PyModuleDef_HEAD_INIT,
-    "_crypt",
+    "_crypt_r",
     NULL,
     0,
-    crypt_methods,
-    _crypt_slots,
+    crypt_r_methods,
+    _crypt_r_slots,
     NULL,
     NULL,
     NULL
 };
 
 PyMODINIT_FUNC
-PyInit__crypt(void)
+PyInit__crypt_r(void)
 {
-    return PyModuleDef_Init(&cryptmodule);
+    return PyModuleDef_Init(&crypt_r_module);
 }

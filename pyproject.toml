@@ -3,9 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "crypt"
+name = "crypt_r"
 version = "3.12.3"
 
 [tool.setuptools]
-py-modules = ["crypt"]
+py-modules = ["crypt_r"]
 package-dir = {"" = "src"}
