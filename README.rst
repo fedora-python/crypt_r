@@ -84,7 +84,7 @@ New in Python 3.3.
 
 ``methods``
    A list of available password hashing algorithms, as
-   ``crypt.METHOD_*`` objects.  This list is sorted from strongest to
+   ``crypt_r.METHOD_*`` objects.  This list is sorted from strongest to
    weakest.
 
 
@@ -96,7 +96,7 @@ The ``crypt_r`` module defines the following functions:
 ``crypt(word, salt=None)``
    *word* will usually be a user's password as typed at a prompt or  in a graphical
    interface.  The optional *salt* is either a string as returned from
-   ``mksalt()``, one of the ``crypt.METHOD_*`` values (though not all
+   ``mksalt()``, one of the ``crypt_r.METHOD_*`` values (though not all
    may be available on all platforms), or a full encrypted password
    including salt, as returned by this function.  If *salt* is not
    provided, the strongest method available in ``methods`` will be used.
@@ -119,7 +119,7 @@ The ``crypt_r`` module defines the following functions:
    password as salt when checking for a password.
 
    Changed in Python 3.3:
-   Accept ``crypt.METHOD_*`` values in addition to strings for *salt*.
+   Accept ``crypt_r.METHOD_*`` values in addition to strings for *salt*.
 
 
 ``mksalt(method=None, *, rounds=None)``
