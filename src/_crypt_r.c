@@ -34,10 +34,17 @@ crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     Py_ssize_t salt_length;
 
     if (!PyUnicode_Check(args[0])) {
+#if PY_VERSION_HEX >= 0x030d00a6
+        PyErr_Format(
+            PyExc_TypeError, "crypt argument 1 (word) must be string, not %T",
+            args[0]
+        );
+#else
         PyErr_Format(
             PyExc_TypeError, "crypt argument 1 (word) must be string, not %s",
             Py_TYPE(args[0])->tp_name
         );
+#endif
         return NULL;
     }
     word = PyUnicode_AsUTF8AndSize(args[0], &word_length);
@@ -53,10 +60,17 @@ crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     }
 
     if (!PyUnicode_Check(args[1])) {
+#if PY_VERSION_HEX >= 0x030d00a6
+        PyErr_Format(
+            PyExc_TypeError, "crypt argument 2 (salt) must be string, not %T",
+            args[1]
+        );
+#else
         PyErr_Format(
             PyExc_TypeError, "crypt argument 2 (salt) must be string, not %s",
             Py_TYPE(args[1])->tp_name
         );
+#endif
         return NULL;
     }
     salt = PyUnicode_AsUTF8AndSize(args[1], &salt_length);

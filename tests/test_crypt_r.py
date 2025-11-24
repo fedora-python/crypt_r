@@ -85,6 +85,14 @@ class CryptRTestCase(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'support'):
                 self.crypt.mksalt(method, rounds=4096)
 
+    def test_invalid_types(self):
+        with self.assertRaisesRegex(TypeError,
+                r'^crypt argument 1 \(word\) must be string, not int$'):
+            self.crypt.crypt(42)
+        with self.assertRaisesRegex(TypeError,
+                r'^crypt argument 2 \(salt\) must be string, not int$'):
+            self.crypt.crypt('mypassword', 42)
+
 
 if sys.version_info >= (3, 13):
     import crypt
