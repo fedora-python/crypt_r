@@ -82,8 +82,68 @@ crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
 }
 
 
+PyDoc_STRVAR(crypt_r_crypt_gensalt__doc__,
+"crypt_gensalt($module, prefix, count, /)\n"
+"--\n"
+"\n"
+"Return a setting string for the hashing method selected by *prefix*\n"
+"(e.g. \"$y$\") with cost *count* (0 selects the method's default),\n"
+"salted with random bytes from the operating system.\n"
+"\n"
+"Raises OSError with errno ENOSYS if the crypt library cannot generate\n"
+"salts on its own.");
+
+static PyObject *
+crypt_r_crypt_gensalt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
+{
+    if (nargs != 2) {
+        PyErr_Format(PyExc_TypeError, "crypt_gensalt expected 2 arguments, got %zd", nargs);
+        return NULL;
+    }
+    const char *prefix;
+    Py_ssize_t prefix_length;
+    unsigned long count;
+
+    if (!PyUnicode_Check(args[0])) {
+        PyErr_Format(
+            PyExc_TypeError, "crypt_gensalt argument 1 (prefix) must be string, not %s",
+            Py_TYPE(args[0])->tp_name
+        );
+        return NULL;
+    }
+    prefix = PyUnicode_AsUTF8AndSize(args[0], &prefix_length);
+    if (prefix == NULL) {
+        return NULL;
+    }
+    if (strlen(prefix) != (size_t)prefix_length) {
+        PyErr_SetString(
+            PyExc_ValueError,
+            "crypt_gensalt argument 1 (prefix) contains embedded null character"
+        );
+        return NULL;
+    }
+
+    count = PyLong_AsUnsignedLong(args[1]);
+    if (count == (unsigned long)-1 && PyErr_Occurred()) {
+        return NULL;
+    }
+
+#ifdef CRYPT_GENSALT_IMPLEMENTS_AUTO_ENTROPY
+    char output[CRYPT_GENSALT_OUTPUT_SIZE];
+    if (crypt_gensalt_rn(prefix, count, NULL, 0, output, sizeof(output)) == NULL) {
+        return PyErr_SetFromErrno(PyExc_OSError);
+    }
+    return PyUnicode_FromString(output);
+#else
+    errno = ENOSYS;
+    return PyErr_SetFromErrno(PyExc_OSError);
+#endif
+}
+
+
 static PyMethodDef crypt_r_methods[] = {
     {"crypt", (PyCFunction)crypt_r_crypt, METH_FASTCALL, crypt_r_crypt__doc__},
+    {"crypt_gensalt", (PyCFunction)crypt_r_crypt_gensalt, METH_FASTCALL, crypt_r_crypt_gensalt__doc__},
     {NULL,              NULL}           /* sentinel */
 };
 
