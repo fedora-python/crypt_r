@@ -21,6 +21,25 @@ PyDoc_STRVAR(crypt_r_crypt__doc__,
 "will be used to perturb the encryption algorithm and produce distinct\n"
 "results for a given *word*.");
 
+/* Set a TypeError complaining that argument `argno` (named `argname`) must be
+ * a string rather than the type of `obj`. Uses the %T format on Python
+ * 3.13.0a6+, falling back to tp_name on older versions. */
+static void
+set_crypt_type_error(int argno, const char *argname, PyObject *obj)
+{
+#if PY_VERSION_HEX >= 0x030d00a6
+    PyErr_Format(
+        PyExc_TypeError, "crypt argument %d (%s) must be string, not %T",
+        argno, argname, obj
+    );
+#else
+    PyErr_Format(
+        PyExc_TypeError, "crypt argument %d (%s) must be string, not %s",
+        argno, argname, Py_TYPE(obj)->tp_name
+    );
+#endif
+}
+
 static PyObject *
 crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
 {
@@ -34,10 +53,7 @@ crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     Py_ssize_t salt_length;
 
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(
-            PyExc_TypeError, "crypt argument 1 (word) must be string, not %s",
-            Py_TYPE(args[0])->tp_name
-        );
+        set_crypt_type_error(1, "word", args[0]);
         return NULL;
     }
     word = PyUnicode_AsUTF8AndSize(args[0], &word_length);
@@ -53,10 +69,7 @@ crypt_r_crypt(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     }
 
     if (!PyUnicode_Check(args[1])) {
-        PyErr_Format(
-            PyExc_TypeError, "crypt argument 2 (salt) must be string, not %s",
-            Py_TYPE(args[1])->tp_name
-        );
+        set_crypt_type_error(2, "salt", args[1]);
         return NULL;
     }
     salt = PyUnicode_AsUTF8AndSize(args[1], &salt_length);
