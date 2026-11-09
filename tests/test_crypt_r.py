@@ -69,7 +69,44 @@ class CryptRTestCase(unittest.TestCase):
             cr2 = self.crypt.crypt('mypassword', cr)
             self.assertEqual(cr2, cr)
 
+    @unittest.skipUnless(
+        crypt_r.METHOD_YESCRYPT in crypt_r.methods, 'requires support of yescrypt'
+    )
+    def test_yescrypt(self):
+        # Adding yescrypt must not change the default method.
+        self.assertNotEqual(self.crypt.methods[0], self.crypt.METHOD_YESCRYPT)
+        # Arbitrary characters from _saltchars are not a valid yescrypt salt,
+        # so every generated one must be accepted, not just most of them.
+        salts = {self.crypt.mksalt(self.crypt.METHOD_YESCRYPT) for _ in range(20)}
+        self.assertEqual(len(salts), 20)
+        for salt in salts:
+            cr = self.crypt.crypt('mypassword', salt)
+            self.assertEqual(len(cr), self.crypt.METHOD_YESCRYPT.total_size)
+            self.assertTrue(cr.startswith(salt + '$'))
+            self.assertEqual(self.crypt.crypt('mypassword', cr), cr)
+        cr = self.crypt.crypt('mypassword', self.crypt.METHOD_YESCRYPT)
+        self.assertNotEqual(self.crypt.crypt('wrongpassword', cr), cr)
+
+    @unittest.skipUnless(
+        crypt_r.METHOD_YESCRYPT in crypt_r.methods, 'requires support of yescrypt'
+    )
+    def test_yescrypt_rounds(self):
+        params = set()
+        for rounds in range(1, 6):
+            salt = self.crypt.mksalt(self.crypt.METHOD_YESCRYPT, rounds=rounds)
+            self.assertTrue(salt.startswith('$y$'))
+            params.add(salt[:-self.crypt.METHOD_YESCRYPT.salt_chars])
+            cr = self.crypt.crypt('mypassword', salt)
+            self.assertTrue(cr.startswith(salt + '$'))
+            self.assertEqual(self.crypt.crypt('mypassword', cr), cr)
+        self.assertEqual(len(params), 5)
+
     def test_invalid_rounds(self):
+        with self.assertRaises(TypeError):
+            self.crypt.mksalt(self.crypt.METHOD_YESCRYPT, rounds='5')
+        for rounds in (0, 12, -1, 1<<999):
+            with self.assertRaises(ValueError):
+                self.crypt.mksalt(self.crypt.METHOD_YESCRYPT, rounds=rounds)
         for method in (self.crypt.METHOD_SHA256, self.crypt.METHOD_SHA512,
                        self.crypt.METHOD_BLOWFISH):
             with self.assertRaises(TypeError):

@@ -21,8 +21,6 @@ not security/cryptography.
 It is easy to use ``crypt_r`` in an insecure way. Notably:
 All hashing methods except ``METHOD_CRYPT`` (the original Unix algorithm from the 1970s)
 are optional platform-specific extensions.
-This library does not expose modern hashing methods like libxcrypt's yescrypt.
-The last wrapper update is from 2017.
 No future development is planned.
 
 To use this module, you can either import ``crypt_r`` explicitly
@@ -61,6 +59,12 @@ are available on all platforms):
 ``METHOD_SHA256``
    Another Modular Crypt Format method with 16 character salt and 43
    character hash based on the SHA-256 hash function.
+
+``METHOD_YESCRYPT``
+   Another Modular Crypt Format method with 22 character salt and 43
+   character hash based on the yescrypt key derivation function,
+   recommended by libxcrypt for new hashes.  Available only when built
+   against libxcrypt, whose `crypt_gensalt(3)`_ generates the salt.
 
 ``METHOD_BLOWFISH``
    Another Modular Crypt Format method with 22 character salt and 31
@@ -131,12 +135,15 @@ The ``crypt_r`` module defines the following functions:
    to  ``crypt`` .
 
    *rounds* specifies the number of rounds for ``METHOD_SHA256``,
-   ``METHOD_SHA512`` and ``METHOD_BLOWFISH``.
+   ``METHOD_SHA512`` and ``METHOD_BLOWFISH``, and the cost for
+   ``METHOD_YESCRYPT``.
    For ``METHOD_SHA256`` and ``METHOD_SHA512`` it must be an integer between
    ``1000`` and ``999_999_999``, the default is ``5000``.  For
    ``METHOD_BLOWFISH`` it must be a power of two between ``16`` (2\ :sup:`4`)
    and ``2_147_483_648`` (2\ :sup:`31`), the default is ``4096``
-   (2\ :sup:`12`).
+   (2\ :sup:`12`).  For ``METHOD_YESCRYPT`` it is libxcrypt's cost
+   parameter, an integer between ``1`` and ``11``; the default is chosen
+   by libxcrypt.
 
    New in Python 3.3.
 
@@ -207,5 +214,6 @@ please refer to the `Python 3.12 Changelog`_.
 .. _PEP 594: https://peps.python.org/pep-0594/#crypt
 .. _crypt(3): https://manpages.debian.org/crypt(3)
 .. _crypt_r(3): https://manpages.debian.org/crypt_r(3)
+.. _crypt_gensalt(3): https://manpages.debian.org/crypt_gensalt(3)
 .. _hmac.compare_digest(): https://docs.python.org/3/library/hmac.html#hmac.compare_digest
 .. _Python 3.12 Changelog: https://docs.python.org/3.12/whatsnew/changelog.html

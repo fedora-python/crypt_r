@@ -45,6 +45,15 @@ def mksalt(method=None, *, rounds=None):
     else:  # modular
         s = f'${method.ident}$'
 
+    if method.ident == 'y':  # yescrypt
+        # The salt must be 16 bytes in yescrypt's own base64 encoding, and the
+        # cost is encoded into the parameters: let libxcrypt build both.
+        if rounds is None:
+            rounds = 0  # libxcrypt's default cost
+        elif not 1 <= rounds <= 11:
+            raise ValueError('rounds out of the range 1 to 11')
+        return _crypt_r.crypt_gensalt(s, rounds)
+
     if method.ident and method.ident[0] == '2':  # Blowfish variants
         if rounds is None:
             log_rounds = 12
@@ -88,9 +97,9 @@ methods = []
 def _add_method(name, *args, rounds=None):
     method = _Method(name, *args)
     globals()['METHOD_' + name] = method
-    salt = mksalt(method, rounds=rounds)
     result = None
     try:
+        salt = mksalt(method, rounds=rounds)
         result = crypt('', salt)
     except OSError as e:
         # Not all libc libraries support all encryption methods.
@@ -104,6 +113,10 @@ def _add_method(name, *args, rounds=None):
 
 _add_method('SHA512', '6', 16, 106)
 _add_method('SHA256', '5', 16, 63)
+
+# Listed after SHA-2, like Blowfish, so the default method stays the same;
+# the lowest cost keeps the import-time probe as cheap as Blowfish's.
+_add_method('YESCRYPT', 'y', 22, 73, rounds=1)
 
 # Choose the strongest supported version of Blowfish hashing.
 # Early versions have flaws.  Version 'a' fixes flaws of
